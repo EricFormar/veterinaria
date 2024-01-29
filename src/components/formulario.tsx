@@ -1,25 +1,24 @@
-import { Dispatch, FormEvent, SetStateAction } from "react";
+import { FormEvent, useContext } from "react";
 import { useForm } from "../hooks/useForm"
 import { InputForm } from "./input-form"
-
-export interface Paciente {
-    id: string;
-    mascota: string;
-    duenio: string;
-    email: string;
-    raza: string;
-}
+import { Paciente, PacientesContext } from "../context/PacientesContext";
 
 type FormValues = Omit<Paciente, 'id'>
 
-export const Formulario = ({ setPacientes }: { setPacientes: Dispatch<SetStateAction<Paciente[]>> }) => {
+//export const Formulario = ({ setPacientes }: { setPacientes: Dispatch<SetStateAction<Paciente[]>> }) => {
 
-    const { formValues, handleChange } = useForm<FormValues>({
+export const Formulario = () => {
+
+    const {agregarPaciente} = useContext(PacientesContext)
+
+    const { formValues, handleChange, reset } = useForm<FormValues>({
         mascota: "",
         duenio: "",
         email: "",
-        raza: ""
+        raza: "",
     });
+
+const {mascota, duenio, email, raza} = formValues;
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
@@ -29,10 +28,10 @@ export const Formulario = ({ setPacientes }: { setPacientes: Dispatch<SetStateAc
             ...formValues
         }
 
+        agregarPaciente(newPaciente)
+      
 
-        setPacientes((prev: Paciente[]) => {
-            return [...prev, newPaciente];
-          });
+        reset()
 
     }
 
@@ -50,6 +49,7 @@ export const Formulario = ({ setPacientes }: { setPacientes: Dispatch<SetStateAc
                     type="text"
                     placeholder="Nombre de la mascota"
                     onChange={handleChange}
+                    value={mascota}
                 />
                 <InputForm
                     label="Raza"
@@ -57,6 +57,8 @@ export const Formulario = ({ setPacientes }: { setPacientes: Dispatch<SetStateAc
                     type="text"
                     placeholder="Raza de la mascota"
                     onChange={handleChange}
+                    value={raza}
+
                 />
                 <InputForm
                     label="Dueño"
@@ -64,6 +66,8 @@ export const Formulario = ({ setPacientes }: { setPacientes: Dispatch<SetStateAc
                     type="text"
                     placeholder="Nombre y apellido del dueño"
                     onChange={handleChange}
+                    value={duenio}
+
                 />
                 <InputForm
                     label="Email"
@@ -71,6 +75,8 @@ export const Formulario = ({ setPacientes }: { setPacientes: Dispatch<SetStateAc
                     type="text"
                     placeholder="Email de contacto"
                     onChange={handleChange}
+                    value={email}
+
                 />
                 <button
                     className="text-white bg-indigo-600 w-full p-3 uppercase font-bold hover:bg-indigo-800 transition-all">Agregar paciente
